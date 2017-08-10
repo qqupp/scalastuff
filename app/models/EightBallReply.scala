@@ -22,6 +22,8 @@ object EightBallReply {
 
   def getAll: List[EightBallReply] = replies toList
 
+  def get(id: Int):Option[EightBallReply] = replies.lift(id)
+
   def add(newReply: EightBallReply): Unit = { replies = replies.+:( newReply ) }
 
 
