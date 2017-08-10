@@ -9,7 +9,12 @@ object EightBallReply {
   private var replies = Array(
     EightBallReply("Nooo"),
     EightBallReply("Yes"),
-    EightBallReply("Absolutely no!")
+    EightBallReply("Absolutely no!"),
+    EightBallReply("Can you repeat please?"),
+    EightBallReply("I'm sorry, I don't know"),
+    EightBallReply("Forget about it!"),
+    EightBallReply("Tomorrow is a good day to die."),
+    EightBallReply("...")
   )
 
 
