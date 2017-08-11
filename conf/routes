@@ -14,10 +14,10 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 
 
-GET     /eight-ball                         controllers.EightBallController.randomReply
+GET     /eight-ball                         controllers.EightBallController.randomMessage
 
-GET     /eight-ball/messages                controllers.EightBallController.getMessages
+GET     /eight-ball/messages                controllers.EightBallController.messages
 
-GET     /eight-ball/message/:id             controllers.EightBallController.getMessage(id: Int)
+GET     /eight-ball/message/:id             controllers.EightBallController.message(id: Int)
 
 

@@ -9,22 +9,22 @@ import models.EightBallReply
 @Singleton
 class EightBallController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
-  def randomReply = Action {
-    val rndString = EightBallReply.getRndBall.content
-    Ok(views.txt.text(rndString))
+  def randomMessage = Action {
+    val rndString = EightBallReply.randomBall.content
+    Ok(rndString)
   }
 
-  def getMessages = Action {
-    val allMsgs = (EightBallReply.getAll map ( x => x.content ) ).
-      fold("")((x:String, y:String) => x + "\n" + y)
-    Ok(views.txt.text(allMsgs))
+  def messages = Action {
+    val allMsgs = (EightBallReply.toList map ( _.content )).
+      foldRight("")( _ + "\n" + _ )
+    Ok(allMsgs)
   }
 
-  def getMessage(id: Int) = Action {
-    EightBallReply.get(id) map { x =>
-      Ok(views.txt.text(x.content))
+  def message(id: Int) = Action {
+    EightBallReply(id) map { x =>
+      Ok(x.content)
     } getOrElse {
-      Ok(views.txt.text("Nothing to see here!"))
+      NotFound("Nothing to see here!")
     }
   }
 }
