@@ -1,10 +1,14 @@
 package controllers
 
 import javax.inject._
-
+import controllers.HomeController.Alphabet
 import models.mongodb.EightBallReply
+import play.api.Logger
 import play.api.mvc._
+import reactivemongo.bson.BSONObjectID
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -23,7 +27,56 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.index("Your new application is ready."))
   }
 
-  def eightBall: Action[AnyContent] = Action.async {
+  def randomEightBall: Action[AnyContent] = Action.async {
     EightBallReply.Queries.getRandomBall.map { ball => Ok(ball.message) }
+  }
+
+  def eightBall(id: String): Action[AnyContent] = Action.async {
+    decompress(id) match {
+      case Failure(_) => Future(NotFound("Id has an invalid format."))
+      case Success(oid) =>
+        EightBallReply.Queries.findById(oid).map {
+          case None => NotFound("Unknown id.")
+          case Some(ball) => Ok(ball.message)
+        }
+    }
+  }
+
+  def compress(id: BSONObjectID, alphabet: String = Alphabet): Try[String] = {
+    HomeController.toString(BigInt(id.stringify, 16), alphabet)
+  }
+
+  def decompress(id: String, alphabet: String = Alphabet): Try[BSONObjectID] = {
+    HomeController.toBigInt(id, alphabet).flatMap(v => BSONObjectID.parse(v.toString(16)))
+  }
+}
+
+object HomeController {
+  val Alphabet = "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"
+
+  def toString(value: BigInt, alphabet: String = Alphabet): Try[String] = {
+    if(value < 0) {
+      return Failure(new IllegalArgumentException(s"""Value must be greater or equal to 0. Got $value"""))
+    }
+
+    if(value == 0) {
+      return Success("0")
+    }
+
+    def asList(num: BigInt): List[Int] =
+      if(num <= 0) Nil
+      else (num % alphabet.length).toInt :: asList(num / alphabet.length)
+
+    Success(asList(value).reverse.map(alphabet(_)).mkString(""))
+  }
+
+  def toBigInt(value: String, alphabet: String = Alphabet): Try[BigInt] = {
+    val digits = value.map(alphabet.indexOf(_))
+
+    if(digits.contains(-1)) {
+      return Failure(new StringIndexOutOfBoundsException("""Value contains characters outside the given alphabet."""))
+    }
+
+    Success(digits.map(BigInt(_)).reduceLeft(_ * alphabet.length + _))
   }
 }

@@ -1,13 +1,11 @@
 package models.mongodb
 
-import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework
 import reactivemongo.bson._
 import services.mongo._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EightBallReply(_id: Option[BSONObjectID], var message: String) extends Model(_id) {
+class EightBallReply(_id: Option[BSONObjectID], var message: String) extends Model[EightBallReply](_id) {
   def this(message: String) = this(None, message)
 
   private[EightBallReply] def this(bson: BSONDocument) =
@@ -16,12 +14,13 @@ class EightBallReply(_id: Option[BSONObjectID], var message: String) extends Mod
       bson.getAs[String]("message").get
     )
 
-  def collection: Collection = EightBallReply
+  val collection: Collection = EightBallReply
+
+  val writer: BSONDocumentWriter[EightBallReply] = EightBallReply.Writer
 
   def toBSON: BSONDocument = {
-    var doc = BSONDocument("message" -> message)
-    if(_id.isDefined) doc ++= ("_id" -> id)
-    doc
+    val doc: BSONDocument = BSONDocument("message" -> message)
+    if(_id.isDefined) doc ++ ("_id" -> id) else doc
   }
 }
 
@@ -37,6 +36,10 @@ object EightBallReply extends Collection {
   }
 
   object Queries {
+    def findById(id: BSONObjectID): Future[Option[EightBallReply]] = {
+      collection.find(BSONDocument("_id" -> id)).one[EightBallReply]
+    }
+
     def getRandomBall: Future[EightBallReply] = {
       import collection.BatchCommands.AggregationFramework.Sample
       collection.aggregate(Sample(1)).map(_.head[EightBallReply].head)

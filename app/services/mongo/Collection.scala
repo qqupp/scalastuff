@@ -8,5 +8,5 @@ import scala.concurrent.duration.Duration
 trait Collection {
   def name: String
 
-  lazy val collection: BSONCollection = Await.result(Database.instance.collection(name), Duration.Inf)
+  lazy val collection: BSONCollection = Await.result(Database.instance.collection(name), Duration.apply(10, "sec"))
 }
