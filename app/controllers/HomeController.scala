@@ -1,7 +1,10 @@
 package controllers
 
 import javax.inject._
+
+import models.mongodb.EightBallReply
 import play.api.mvc._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -20,4 +23,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.index("Your new application is ready."))
   }
 
+  def eightBall: Action[AnyContent] = Action.async {
+    EightBallReply.Queries.getRandomBall.map { ball => Ok(ball.message) }
+  }
 }
