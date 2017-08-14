@@ -33,7 +33,8 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
   def eightBall(id: String): Action[AnyContent] = Action.async {
     decompress(id) match {
-      case Failure(_) => Future(NotFound("Id has an invalid format."))
+      case Failure(_) =>
+        Future(BadRequest("Invalid id format."))
       case Success(oid) =>
         EightBallReply.Queries.findById(oid).map {
           case None => NotFound("Unknown id.")
@@ -63,11 +64,14 @@ object HomeController {
       return Success("0")
     }
 
-    def asList(num: BigInt): List[Int] =
-      if(num <= 0) Nil
-      else (num % alphabet.length).toInt :: asList(num / alphabet.length)
+    var digits: List[Int] = Nil
+    var num = value
+    while(num > 0) {
+      digits = (num % alphabet.length).toInt :: digits
+      num /= alphabet.length
+    }
 
-    Success(asList(value).reverse.map(alphabet(_)).mkString(""))
+    Success(digits.map(alphabet(_)).mkString(""))
   }
 
   def toBigInt(value: String, alphabet: String = Alphabet): Try[BigInt] = {
