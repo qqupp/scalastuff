@@ -1,9 +1,9 @@
 package services.mongo
 
-import reactivemongo.api.collections.bson.BSONCollection
-import services.Database
-
 import scala.concurrent.Future
+import reactivemongo.api.collections.bson.BSONCollection
+
+import services.Database
 
 trait Collection {
   def name: String

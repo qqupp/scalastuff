@@ -1,9 +1,9 @@
 package services.mongo
 
-import reactivemongo.api.commands.WriteResult
-import reactivemongo.bson.{BSONDocument, BSONDocumentWriter, BSONObjectID}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import reactivemongo.api.commands.WriteResult
+import reactivemongo.bson.{BSONDocument, BSONDocumentWriter, BSONObjectID}
 
 abstract class Model[T <: Model[T]](private var _id: Option[BSONObjectID] = None) {
   def id: Option[BSONObjectID] = _id

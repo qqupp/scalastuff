@@ -1,14 +1,14 @@
 package controllers
 
 import javax.inject._
-import controllers.HomeController.Alphabet
-import models.mongodb.EightBallReply
-import play.api.Logger
-import play.api.mvc._
-import reactivemongo.bson.BSONObjectID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
+import play.api.mvc._
+
+import controllers.HomeController.Alphabet
+import models.mongodb.EightBallReply
+import reactivemongo.bson.BSONObjectID
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -32,7 +32,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def eightBall(id: String): Action[AnyContent] = Action.async {
-    decompress(id) match {
+    HomeController.decompress(id) match {
       case Failure(_) =>
         Future(BadRequest("Invalid id format."))
       case Success(oid) =>
@@ -43,17 +43,17 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     }
   }
 
-  def compress(id: BSONObjectID, alphabet: String = Alphabet): Try[String] = {
-    HomeController.toString(BigInt(id.stringify, 16), alphabet)
-  }
-
-  def decompress(id: String, alphabet: String = Alphabet): Try[BSONObjectID] = {
-    HomeController.toBigInt(id, alphabet).flatMap(v => BSONObjectID.parse(v.toString(16)))
+  def newEightBall = Action {
+    Ok(views.html.newEightBall())
   }
 }
 
 object HomeController {
   val Alphabet = "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"
+
+  def compress(id: BSONObjectID, alphabet: String = Alphabet): Try[String] = {
+    toString(BigInt(id.stringify, 16), alphabet)
+  }
 
   def toString(value: BigInt, alphabet: String = Alphabet): Try[String] = {
     if(value < 0) {
@@ -72,6 +72,10 @@ object HomeController {
     }
 
     Success(digits.map(alphabet(_)).mkString(""))
+  }
+
+  def decompress(id: String, alphabet: String = Alphabet): Try[BSONObjectID] = {
+    toBigInt(id, alphabet).flatMap(v => BSONObjectID.parse(v.toString(16)))
   }
 
   def toBigInt(value: String, alphabet: String = Alphabet): Try[BigInt] = {

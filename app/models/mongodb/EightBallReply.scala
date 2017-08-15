@@ -1,9 +1,10 @@
 package models.mongodb
 
-import reactivemongo.bson._
-import services.mongo._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import reactivemongo.bson._
+
+import services.mongo._
 
 class EightBallReply(_id: Option[BSONObjectID], var message: String) extends Model[EightBallReply](_id) {
   def this(message: String) = this(None, message)

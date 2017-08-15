@@ -1,11 +1,11 @@
 package services
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import play.api.Configuration
 import play.api.inject.ApplicationLifecycle
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.{DefaultDB, MongoConnection, MongoDriver}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class Database(configuration: Configuration, lifecycle: ApplicationLifecycle) {
 
