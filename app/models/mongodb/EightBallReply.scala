@@ -37,12 +37,14 @@ object EightBallReply extends Collection {
 
   object Queries {
     def findById(id: BSONObjectID): Future[Option[EightBallReply]] = {
-      collection.find(BSONDocument("_id" -> id)).one[EightBallReply]
+      collection.flatMap(_.find(BSONDocument("_id" -> id)).one[EightBallReply])
     }
 
     def getRandomBall: Future[EightBallReply] = {
-      import collection.BatchCommands.AggregationFramework.Sample
-      collection.aggregate(Sample(1)).map(_.head[EightBallReply].head)
+      collection.flatMap { coll =>
+        import coll.BatchCommands.AggregationFramework.Sample
+        coll.aggregate(Sample(1)).map(_.head[EightBallReply].head)
+      }
     }
   }
 

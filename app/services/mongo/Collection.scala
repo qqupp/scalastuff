@@ -2,11 +2,11 @@ package services.mongo
 
 import reactivemongo.api.collections.bson.BSONCollection
 import services.Database
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+
+import scala.concurrent.Future
 
 trait Collection {
   def name: String
 
-  lazy val collection: BSONCollection = Await.result(Database.instance.collection(name), Duration.apply(10, "sec"))
+  def collection: Future[BSONCollection] = Database.instance.collection(name)
 }

@@ -11,11 +11,10 @@ class Database(configuration: Configuration, lifecycle: ApplicationLifecycle) {
 
   val driver = new MongoDriver
 
-  val (connection: MongoConnection, database: Future[DefaultDB]) = {
+  val (connection: MongoConnection, databaseName: String) = {
     val uri = configuration.underlying.getString("mongodb.uri")
     val parsedUri = MongoConnection.parseURI(uri).get
-    val conn = driver.connection(parsedUri)
-    (conn, conn.database(parsedUri.db.get))
+    (driver.connection(parsedUri), parsedUri.db.get)
   }
 
   lifecycle.addStopHook { () =>
@@ -23,6 +22,8 @@ class Database(configuration: Configuration, lifecycle: ApplicationLifecycle) {
     driver.close()
     Future.successful(())
   }
+
+  def database: Future[DefaultDB] = connection.database(databaseName)
 
   def collection(name: String): Future[BSONCollection] = database.map(_.collection(name))
 }

@@ -19,10 +19,10 @@ abstract class Model[T <: Model[T]](private var _id: Option[BSONObjectID] = None
     _id match {
       case None =>
         _id = Option(BSONObjectID.generate)
-        collection.collection.insert(self)
+        collection.collection.flatMap(_.insert(self))
 
       case Some(id) =>
-        collection.collection.update(BSONDocument("_id" -> id), self)
+        collection.collection.flatMap(_.update(BSONDocument("_id" -> id), self))
     }
   }
 }
