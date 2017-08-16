@@ -16,3 +16,7 @@ GET     /eight-ball      controllers.HomeController.randomEightBall
 GET     /eight-ball/new  controllers.HomeController.newEightBall
 GET     /eight-ball/:id  controllers.HomeController.eightBall(id: String)
 #GET     /eight-ball/all  controllers.HomeController.listEightBall
+
+#GET     /eight-ball                         controllers.EightBallController.randomMessage
+#GET     /eight-ball/messages                controllers.EightBallController.messages
+#GET     /eight-ball/message/:id             controllers.EightBallController.message(id: Int)
