@@ -1,4 +1,6 @@
-@(message: String, style: String = "scala") 
+@(message: String, style: String = "scala")
+
+<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/lightbend.css")">
 
 @defining(play.core.PlayVersion.current) { version =>
 

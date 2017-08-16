@@ -3,21 +3,20 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET     /                controllers.HomeController.index
 # An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
+GET     /count           controllers.CountController.count
 # An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+GET     /message         controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file    controllers.Assets.versioned(path="/public", file: Asset)
 
+GET     /eight-ball      controllers.HomeController.randomEightBall
+GET     /eight-ball/new  controllers.HomeController.newEightBall
+GET     /eight-ball/:id  controllers.HomeController.eightBall(id: String)
+#GET     /eight-ball/all  controllers.HomeController.listEightBall
 
-
-GET     /eight-ball                         controllers.EightBallController.randomMessage
-
-GET     /eight-ball/messages                controllers.EightBallController.messages
-
-GET     /eight-ball/message/:id             controllers.EightBallController.message(id: Int)
-
-
+#GET     /eight-ball                         controllers.EightBallController.randomMessage
+#GET     /eight-ball/messages                controllers.EightBallController.messages
+#GET     /eight-ball/message/:id             controllers.EightBallController.message(id: Int)
