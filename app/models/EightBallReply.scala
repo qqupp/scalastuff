@@ -2,7 +2,7 @@ package models
 
 import scala.util.Random
 
-case class EightBallReply (content: String)
+case class EightBallReply(content: String)
 
 object EightBallReply {
 
@@ -18,9 +18,11 @@ object EightBallReply {
   )
 
 
-  def getRndBall: EightBallReply = replies(Random.nextInt(replies.length))
+  def randomBall: EightBallReply = replies(Random.nextInt(replies.length))
 
-  def getAll: List[EightBallReply] = replies toList
+  def toList: List[EightBallReply] = replies toList
+
+  def apply(id: Int): Option[EightBallReply] = replies.lift(id)
 
   def add(newReply: EightBallReply): Unit = { replies = replies.+:( newReply ) }
 

@@ -11,3 +11,13 @@ GET     /message                    controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+
+
+GET     /eight-ball                         controllers.EightBallController.randomMessage
+
+GET     /eight-ball/messages                controllers.EightBallController.messages
+
+GET     /eight-ball/message/:id             controllers.EightBallController.message(id: Int)
+
+
