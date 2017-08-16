@@ -14,6 +14,7 @@ final class DatabaseModule extends AbstractModule {
 
 trait DatabaseInitializer {}
 
+@Singleton
 class DatabaseInitializerImpl @Inject()(configuration: Configuration, lifecycle: ApplicationLifecycle)
   extends DatabaseInitializer {
 

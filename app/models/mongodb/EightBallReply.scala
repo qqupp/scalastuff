@@ -9,7 +9,7 @@ import services.mongo._
 class EightBallReply(_id: Option[BSONObjectID], var message: String) extends Model[EightBallReply](_id) {
   def this(message: String) = this(None, message)
 
-  private[EightBallReply] def this(bson: BSONDocument) =
+  private def this(bson: BSONDocument) =
     this(
       bson.getAs[BSONObjectID]("_id"),
       bson.getAs[String]("message").get
@@ -43,8 +43,7 @@ object EightBallReply extends Collection {
 
     def getRandomBall: Future[EightBallReply] = {
       collection.flatMap { coll =>
-        import coll.BatchCommands.AggregationFramework.Sample
-        coll.aggregate(Sample(1)).map(_.head[EightBallReply].head)
+        coll.aggregate(coll.BatchCommands.AggregationFramework.Sample(1)).map(_.head[EightBallReply].head)
       }
     }
   }
