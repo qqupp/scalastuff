@@ -9,9 +9,18 @@ import models.EightBallReply
 @Singleton
 class EightBallController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
-  def randomMessage = Action {
+  def randomMessage = Action { implicit request =>
     val rndString = EightBallReply.randomBall.content
-    Ok(rndString)
+
+    def _gencontent[T,T1](f: T => T1)(x: T): T1 = f(x)
+
+    def _generate[T] = _gencontent( _: String => T )(rndString)
+
+    render {
+      case Accepts.Xml() => Ok(_generate( x => <b>{x}</b>))
+      case Accepts.Json() => Ok(rndString)
+    }
+
   }
 
   def messages = Action {
